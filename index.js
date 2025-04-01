@@ -7,10 +7,21 @@ const cookieparser = require("cookie-parser")
 app.get("/", (req, res)=>{
     res.json("hello this is coupan distribution")
 })
+const allowedOrigins = [
+  "http://localhost:3000",  // Local development
+  "https://frontend-coupondist.onrender.com"  // Deployed frontend
+];
+
 app.use(cors({
-    origin: "http://localhost:3000", // Replace with frontend URL
-    credentials: true,
-  }));
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieparser());
